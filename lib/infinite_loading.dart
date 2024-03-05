@@ -8,25 +8,38 @@ class InfiniteList extends StatefulWidget {
 }
 
 class _InfiniteListState extends State<InfiniteList> {
-  List data = [];
+  final _scrollController = ScrollController();
+  final _list = List.generate(20, (index) => 'Item ${index + 1}');
+  int _currentPage = 1;
+
+  @override
+  void initState() {
+    _scrollController.addListener(_increaseData);
+    super.initState();
+  }
+
+  void _increaseData() {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      setState(() {
+        _list.addAll(List.generate(20, (index) => 'Item ${index + 1 + _currentPage * 20}'));
+        _currentPage++;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (ScrollNotification scrollInfo) {
-        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-          // This code block is triggered when the user scrolls to the bottom of the listview,
-          // here is where you would make a request to storage or network to fetch additional,
-          // data to be added to the listview
-        }
-        return false;
-      },
-      child: ListView.builder(
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text("This is one item in your list view"),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text("Infinite Loading"),
+      ),
+      body: ListView.builder(
+        controller: _scrollController,
+        itemCount: _list.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            title: Text(_list[index]),
           );
         },
       ),

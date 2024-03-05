@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'infinite_loading.dart';
 import 'main.dart';
 
 class CounterPage extends StatefulWidget {
@@ -61,6 +62,15 @@ class _CounterPageState extends State<CounterPage> {
                 ],
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: ElevatedButton(onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const InfiniteList(),
+                  settings: RouteSettings(name: 'Infinite List'),
+                ));
+              }, child: Text("Next Demo")),
+            )
           ],
         ),
       ),
